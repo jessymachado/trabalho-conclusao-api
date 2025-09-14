@@ -2,39 +2,35 @@ const express = require('express');
 const router = express.Router();
 const userService = require('../service/userService');
 
-router.post('/user/register', (req, res) => {
+router.post('/usuario/registrarUsuario', (req, res) => {
   try {
-    const { username, password } = req.body;
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Informe usuário e senha.' });
+    const { usuario, senha } = req.body;
+    if (!usuario || !senha) {
+      return res.status(400).json({ erro: 'Informe usuário e senha.' });
     }
-    const user = userService.registerUser(username, password);
-    res.status(201).json({ user });
+    const novoUsuario = userService.registrarUsuario(usuario, senha);
+    res.status(201).json({ usuario: novoUsuario });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ erro: err.message });
   }
 });
 
-router.post('/user/login', (req, res) => {
+router.post('/usuario/logarUsuario', (req, res) => {
   try {
-    const { username, password } = req.body;
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Informe usuário e senha.' });
+    const { usuario, senha } = req.body;
+    if (!usuario || !senha) {
+      return res.status(400).json({ erro: 'Informe usuário e senha.' });
     }
-    const user = userService.loginUser(username, password);
-    res.status(200).json({ user });
+    const usuarioLogado = userService.logarUsuario(usuario, senha);
+    res.status(200).json({ usuario: usuarioLogado });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ erro: err.message });
   }
 });
 
-router.get('/user/users', (req, res) => {
-  try {
-    const users = userService.getAllUsers();
-    res.status(200).json({ users });
-  } catch (err) {
-    res.status(500).json({ error: 'Erro ao consultar usuários.' });
-  }
+router.get('/usuario/consultarUsuarios', (req, res) => {  
+  const usuarios = userService.consultarUsuarios();  
+  res.status(200).json({ usuarios: usuarios });  
 });
 
 module.exports = router;

@@ -6,7 +6,7 @@
     "description": "API para registro, login e consulta de usuários."
   },
   "paths": {
-    "/user/register": {
+    "/usuario/registrarUsuario": {
       "post": {
         "summary": "Registra um novo usuário",
         "requestBody": {
@@ -43,7 +43,7 @@
         }
       }
     },
-    "/user/login": {
+    "/usuario/logarUsuario": {
       "post": {
         "summary": "Realiza login do usuário",
         "requestBody": {
@@ -80,7 +80,7 @@
         }
       }
     },
-    "/user/users": {
+    "/usuario/consultarUsuarios": {
       "get": {
         "summary": "Lista todos os usuários cadastrados",
         "responses": {
@@ -91,7 +91,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "users": {
+                    "usuarios": {
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/Usuario"
@@ -110,7 +110,7 @@
     "schemas": {
       "UsuarioInput": {
         "type": "object",
-        "required": ["username", "password"],
+        "required": ["usuario", "senha"],
         "properties": {
           "username": {
             "type": "string",

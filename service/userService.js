@@ -1,28 +1,28 @@
-const { users } = require('../model/userModel');
+const { usuarios } = require('../model/userModel');
 
-function registerUser(username, password) {
-  if (users.find(u => u.username === username)) {
+function registrarUsuario(usuario, senha) {
+  if (usuarios.find(u => u.usuario === usuario)) {
     throw new Error('Usuário já existe.');
   }
-  const user = { username, password };
-  users.push(user);
-  return user;
+  const novoUsuario = { usuario, senha };
+  usuarios.push(novoUsuario);
+  return novoUsuario;
 }
 
-function loginUser(username, password) {
-  const user = users.find(u => u.username === username && u.password === password);
-  if (!user) {
+function logarUsuario(usuario, senha) {
+  const usuarioEncontrado = usuarios.find(u => u.usuario === usuario && u.senha === senha);
+  if (!usuarioEncontrado) {
     throw new Error('Credenciais inválidas.');
   }
   return user;
 }
 
-function getAllUsers() {
-  return users.map(u => ({ username: u.username }));
+function consultarUsuarios() {
+  return usuarios.map(u => ({ usuario: u.usuario }));
 }
 
 module.exports = {
-  registerUser,
-  loginUser,
-  getAllUsers
+  registrarUsuario,
+  logarUsuario,
+  consultarUsuarios,
 };
