@@ -1,4 +1,5 @@
 const { usuarios } = require('../model/userModel');
+let usuarioLogado = null;
 
 function registrarUsuario(usuario, senha) {
   if (usuarios.find(u => u.usuario === usuario)) {
@@ -17,6 +18,14 @@ function logarUsuario(usuario, senha) {
   return usuarioEncontrado;
 }
 
+function estaLogado() {
+  return !!usuarioLogado;
+}
+
+function deslogarUsuario() {
+  usuarioLogado = null;
+}
+
 function consultarUsuarios() {
   return usuarios.map(u => ({ usuario: u.usuario }));
 }
@@ -25,4 +34,6 @@ module.exports = {
   registrarUsuario,
   logarUsuario,
   consultarUsuarios,
+  estaLogado,
+  deslogarUsuario
 };
