@@ -15,6 +15,7 @@ function logarUsuario(usuario, senha) {
   if (!usuarioEncontrado) {
     throw new Error('Credenciais inválidas.');
   }
+  usuarioLogado = usuarioEncontrado;
   return usuarioEncontrado;
 }
 
