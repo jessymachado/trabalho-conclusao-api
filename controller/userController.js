@@ -21,8 +21,8 @@ router.post('/usuario/logarUsuario', (req, res) => {
     if (!usuario || !senha) {
       return res.status(400).json({ erro: 'Informe usuário e senha.' });
     }
-    const usuarioLogado = userService.logarUsuario(usuario, senha);
-    res.status(200).json({ usuario: usuarioLogado });
+    const resultado = userService.logarUsuario(usuario, senha);
+    res.status(200).json(resultado);
   } catch (err) {
     res.status(400).json({ erro: err.message });
   }

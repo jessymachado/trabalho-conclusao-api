@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+const SECRET = process.env.JWT_SECRET || 'secretdemo';
 const { usuarios } = require('../model/userModel');
 let usuarioLogado = null;
 
@@ -15,12 +17,8 @@ function logarUsuario(usuario, senha) {
   if (!usuarioEncontrado) {
     throw new Error('Credenciais inválidas.');
   }
-  usuarioLogado = { usuario: usuarioEncontrado.usuario };
-  return usuarioEncontrado;
-}
-
-function estaLogado() {
-  return !!usuarioLogado;
+  const token = jwt.sign({ usuario: usuarioEncontrado.usuario }, SECRET, { expiresIn: '2h' });
+  return { usuario: usuarioEncontrado.usuario, token };
 }
 
 function deslogarUsuario() {
@@ -35,6 +33,5 @@ module.exports = {
   registrarUsuario,
   logarUsuario,
   consultarUsuarios,
-  estaLogado,
   deslogarUsuario
 };

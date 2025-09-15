@@ -108,6 +108,7 @@
     "/agendamento/marcar": {
       "post": {
         "summary": "Marcar agendamento (login obrigatório)",
+        "security": [ { "bearerAuth": [] } ],
         "requestBody": {
           "required": true,
           "content": {
@@ -147,6 +148,7 @@
     "/agendamento/desmarcar": {
       "put": {
         "summary": "Desmarcar agendamento (login obrigatório)",
+        "security": [ { "bearerAuth": [] } ],
         "requestBody": {
           "required": true,
           "content": {
@@ -223,6 +225,13 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
       "AgendamentoInput": {
         "type": "object",

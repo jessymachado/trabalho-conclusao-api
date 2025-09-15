@@ -1,13 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const agendamentoService = require('../service/agendamentoService');
-const { estaLogado } = require('../service/userService');
+const authenticateToken = require('../middleware/authenticateToken');
 
-// Marcar agendamento (login obrigatório)
-router.post('/agendamento/marcar', (req, res) => {
-  if (!estaLogado()) {
-    return res.status(401).json({ error: 'Credenciais inválidas. Faça login para agendar.' });
-  }
+
+router.post('/agendamento/marcar', authenticateToken, (req, res) => {
   try {
     const agendamento = agendamentoService.marcarAgendamento(req.body);
     res.status(201).json({ message: 'Agendamento realizado com sucesso!', agendamento });
@@ -16,11 +13,7 @@ router.post('/agendamento/marcar', (req, res) => {
   }
 });
 
-// Desmarcar agendamento (login obrigatório, método PUT)
-router.put('/agendamento/desmarcar', (req, res) => {
-  if (!estaLogado()) {
-    return res.status(401).json({ error: 'Credenciais inválidas. Faça login para desmarcar.' });
-  }
+router.put('/agendamento/desmarcar', authenticateToken, (req, res) => {
   try {
     agendamentoService.desmarcarAgendamento(req.body);
     res.status(200).json({ message: 'Horário agendado foi desmarcado.' });
@@ -29,13 +22,13 @@ router.put('/agendamento/desmarcar', (req, res) => {
   }
 });
 
-// Listar horários disponíveis (GET)
+
 router.get('/agendamento/horariosDisponiveis', (req, res) => {
   const horarios = agendamentoService.listarHorariosDisponiveis();
   res.status(200).json({ horariosDisponiveis: horarios });
 });
 
-// Listar horários agendados por data (GET)
+
 router.get('/agendamento/horariosAgendados/:date', (req, res) => {
   const data = req.params.date;
   const agendados = agendamentoService.listarHorariosAgendadosPorData(data);
