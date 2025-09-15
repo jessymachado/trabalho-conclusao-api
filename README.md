@@ -1,6 +1,6 @@
-# API de Usuários - Express
+# API de Agendamento do Salão de Beleza
 
-Esta API permite registrar, logar e consultar usuários, com armazenamento em memória. Documentação disponível via Swagger.
+Esta API permite registrar, logar e consultar usuários, além de agendar horários para serviços em um salão de beleza. Documentação disponível via Swagger.
 
 ## Instalação
 
@@ -21,18 +21,59 @@ Esta API permite registrar, logar e consultar usuários, com armazenamento em me
   const app = require('./app');
   ```
 
+
 ## Endpoints
 
-- `POST /user/register` - Registra novo usuário
-- `POST /user/login` - Realiza login
-- `GET /user/users` - Lista usuários cadastrados
+- `POST /usuario/registrarUsuario` - Registra novo usuário
+- `POST /usuario/logarUsuario` - Realiza login
+- `GET /usuario/consultarUsuarios` - Lista usuários cadastrados
+- `POST /agendamento/marcar` - Marcar agendamento (login obrigatório)
+- `PUT /agendamento/desmarcar` - Desmarcar agendamento (login obrigatório)
+- `GET /agendamento/horariosDisponiveis` - Listar próximos 5 dias úteis e horários disponíveis
+- `GET /agendamento/horariosAgendados/:date` - Listar agendamentos por data
 - `GET /api-docs` - Documentação Swagger
 
 ## Regras de Negócio
 - Não é permitido registrar usuários duplicados
 - Login exige usuário e senha
+- Só é possível marcar/desmarcar agendamento se estiver logado
+- Não é possível agendar o mesmo serviço para o mesmo cliente no mesmo dia
+- Não é possível agendar horário já ocupado
+- Ao marcar/desmarcar, o registro é salvo/atualizado em arquivo CSV
 
 ## Observações
 - Os dados são armazenados apenas em memória (variáveis)
 - Estrutura separada em controller, service e model
 - Documentação automática via Swagger
+
+## Exemplo de agendamento
+```json
+{
+  "nomeCliente": "Jessica",
+  "telefoneCliente": "51982844440",
+  "dataAgendada": "17/09/2025",
+  "horarioAgendado": "09:00",
+  "servico": "CORTE"
+}
+```
+
+## Exemplo de resposta ao marcar agendamento
+```json
+{
+  "message": "Agendamento realizado com sucesso!",
+  "agendamento": {
+    "nomeCliente": "Jessica",
+    "telefoneCliente": "51982844440",
+    "dataAgendada": "17/09/2025",
+    "horarioAgendado": "09:00",
+    "servico": "CORTE"
+  }
+}
+```
+
+## Exemplo de resposta ao desmarcar agendamento
+```json
+{
+  "message": "Horário agendado foi desmarcado."
+}
+```

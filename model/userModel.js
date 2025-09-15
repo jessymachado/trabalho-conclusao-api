@@ -1,4 +1,2 @@
-// Armazenamento em memória
-const users = [];
-
-module.exports = { users };
+const usuarios = [];
+module.exports = { usuarios };

@@ -1,28 +1,37 @@
-const { users } = require('../model/userModel');
+const jwt = require('jsonwebtoken');
+const SECRET = process.env.JWT_SECRET || 'secretdemo';
+const { usuarios } = require('../model/userModel');
+let usuarioLogado = null;
 
-function registerUser(username, password) {
-  if (users.find(u => u.username === username)) {
+function registrarUsuario(usuario, senha) {
+  if (usuarios.find(u => u.usuario === usuario)) {
     throw new Error('Usuário já existe.');
   }
-  const user = { username, password };
-  users.push(user);
-  return user;
+  const novoUsuario = { usuario, senha };
+  usuarios.push(novoUsuario);
+  return { usuario: novoUsuario.usuario }; 
 }
 
-function loginUser(username, password) {
-  const user = users.find(u => u.username === username && u.password === password);
-  if (!user) {
+function logarUsuario(usuario, senha) {
+  const usuarioEncontrado = usuarios.find(u => u.usuario === usuario && u.senha === senha);
+  if (!usuarioEncontrado) {
     throw new Error('Credenciais inválidas.');
   }
-  return user;
+  const token = jwt.sign({ usuario: usuarioEncontrado.usuario }, SECRET, { expiresIn: '2h' });
+  return { usuario: usuarioEncontrado.usuario, token };
 }
 
-function getAllUsers() {
-  return users.map(u => ({ username: u.username }));
+function deslogarUsuario() {
+  usuarioLogado = null;
+}
+
+function consultarUsuarios() {
+  return usuarios.map(u => ({ usuario: u.usuario }));
 }
 
 module.exports = {
-  registerUser,
-  loginUser,
-  getAllUsers
+  registrarUsuario,
+  logarUsuario,
+  consultarUsuarios,
+  deslogarUsuario
 };
