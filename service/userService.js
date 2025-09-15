@@ -7,7 +7,7 @@ function registrarUsuario(usuario, senha) {
   }
   const novoUsuario = { usuario, senha };
   usuarios.push(novoUsuario);
-  return novoUsuario;
+  return { usuario: novoUsuario.usuario }; 
 }
 
 function logarUsuario(usuario, senha) {
@@ -15,7 +15,7 @@ function logarUsuario(usuario, senha) {
   if (!usuarioEncontrado) {
     throw new Error('Credenciais inválidas.');
   }
-  usuarioLogado = usuarioEncontrado;
+  usuarioLogado = { usuario: usuarioEncontrado.usuario };
   return usuarioEncontrado;
 }
 
