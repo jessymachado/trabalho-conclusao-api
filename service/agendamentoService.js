@@ -1,6 +1,5 @@
 const { agendamentos } = require('../model/agendamentoModel');
 const fs = require('fs');
-const path = require('path');
 
 const HORARIOS = [
   '09:00','09:30','10:00','10:30','11:00','11:30',
@@ -46,7 +45,6 @@ function marcarAgendamento({ nomeCliente, telefoneCliente, dataAgendada, horario
   }
   const agendamento = { nomeCliente, telefoneCliente, dataAgendada, horarioAgendado, servico };
   agendamentos.push(agendamento);
-  salvarCSV();
   return agendamento;
 }
 
@@ -56,21 +54,6 @@ function desmarcarAgendamento({ nomeCliente, telefoneCliente, dataAgendada, hora
   agendamentos.splice(idx, 1);
   salvarCSV();
   return true;
-}
-
-function salvarCSV() {
-  const dias = getProximosDiasUteis();
-  dias.forEach(data => {
-    const linhas = HORARIOS.map(horario => {
-      const ag = agendamentos.find(a => a.dataAgendada === data && a.horarioAgendado === horario);
-      if (ag) {
-        return `"${horario}";"${ag.nomeCliente}";"${ag.telefoneCliente}";"${ag.servico}"`;
-      } else {
-        return `"${horario}";"";"";""`;
-      }
-    });
-    fs.writeFileSync(path.join(__dirname, `../csv/agendamentos_${data.replace(/\//g,'-')}.csv`), linhas.join('\n'), 'utf8');
-  });
 }
 
 module.exports = {
