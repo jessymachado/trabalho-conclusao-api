@@ -37,8 +37,8 @@ function listarHorariosAgendadosPorData(data) {
 
 function marcarAgendamento({ nomeCliente, telefoneCliente, dataAgendada, horarioAgendado, servico }) {
   // Regras de duplicidade
-  if (agendamentos.find(a => a.nomeCliente === nomeCliente && a.telefoneCliente === telefoneCliente && a.dataAgendada === dataAgendada && a.servico === servico)) {
-    throw new Error('Cliente já possui agendamento para este serviço neste dia.');
+  if (agendamentos.find(a => a.nomeCliente === nomeCliente && a.telefoneCliente === telefoneCliente && a.dataAgendada === dataAgendada && a.servico === servico && a.horarioAgendado === horarioAgendado)) {
+    throw new Error('Cliente já possui agendamento para este serviço neste dia e horário.');
   }
   if (agendamentos.find(a => a.dataAgendada === dataAgendada && a.horarioAgendado === horarioAgendado)) {
     throw new Error('O horário desejado já está agendado por outro cliente.');
