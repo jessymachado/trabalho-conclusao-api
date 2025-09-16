@@ -51,8 +51,7 @@ function marcarAgendamento({ nomeCliente, telefoneCliente, dataAgendada, horario
 function desmarcarAgendamento({ nomeCliente, telefoneCliente, dataAgendada, horarioAgendado }) {
   const idx = agendamentos.findIndex(a => a.nomeCliente === nomeCliente && a.telefoneCliente === telefoneCliente && a.dataAgendada === dataAgendada && a.horarioAgendado === horarioAgendado);
   if (idx === -1) throw new Error('Agendamento não encontrado.');
-  agendamentos.splice(idx, 1);
-  salvarCSV();
+  agendamentos.splice(idx, 1);  
   return true;
 }
 
