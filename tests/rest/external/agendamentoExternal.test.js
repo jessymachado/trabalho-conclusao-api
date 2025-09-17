@@ -2,7 +2,7 @@
 const request = require('supertest');
 const { expect, use } = require('chai');
 const { getProximosDiasUteis } = require('../../../service/agendamentoService.js');
-
+require('dotenv').config();
 
 const chaiExclude = require('chai-exclude')
 use(chaiExclude)
