@@ -11,7 +11,7 @@ router.post('/usuario/registrarUsuario', (req, res) => {
     const novoUsuario = userService.registrarUsuario(usuario, senha);
     res.status(201).json({ usuario: novoUsuario });
   } catch (err) {
-    res.status(400).json({ erro: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 
@@ -24,7 +24,7 @@ router.post('/usuario/logarUsuario', (req, res) => {
     const resultado = userService.logarUsuario(usuario, senha);
     res.status(200).json(resultado);
   } catch (err) {
-    res.status(400).json({ erro: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 

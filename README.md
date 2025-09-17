@@ -37,9 +37,8 @@ Esta API permite registrar, logar e consultar usuários, além de agendar horár
 - Não é permitido registrar usuários duplicados
 - Login exige usuário e senha
 - Só é possível marcar/desmarcar agendamento se estiver logado
-- Não é possível agendar o mesmo serviço para o mesmo cliente no mesmo dia
+- Não é possível agendar o mesmo serviço para o mesmo cliente no mesmo dia e horário
 - Não é possível agendar horário já ocupado
-- Ao marcar/desmarcar, o registro é salvo/atualizado em arquivo CSV
 
 ## Observações
 - Os dados são armazenados apenas em memória (variáveis)

@@ -1,6 +1,5 @@
 const { agendamentos } = require('../model/agendamentoModel');
 const fs = require('fs');
-const path = require('path');
 
 const HORARIOS = [
   '09:00','09:30','10:00','10:30','11:00','11:30',
@@ -38,39 +37,22 @@ function listarHorariosAgendadosPorData(data) {
 
 function marcarAgendamento({ nomeCliente, telefoneCliente, dataAgendada, horarioAgendado, servico }) {
   // Regras de duplicidade
-  if (agendamentos.find(a => a.nomeCliente === nomeCliente && a.telefoneCliente === telefoneCliente && a.dataAgendada === dataAgendada && a.servico === servico)) {
-    throw new Error('Cliente já possui agendamento para este serviço neste dia.');
+  if (agendamentos.find(a => a.nomeCliente === nomeCliente && a.telefoneCliente === telefoneCliente && a.dataAgendada === dataAgendada && a.servico === servico && a.horarioAgendado === horarioAgendado)) {
+    throw new Error('Cliente já possui agendamento para este serviço neste dia e horário.');
   }
   if (agendamentos.find(a => a.dataAgendada === dataAgendada && a.horarioAgendado === horarioAgendado)) {
     throw new Error('O horário desejado já está agendado por outro cliente.');
   }
   const agendamento = { nomeCliente, telefoneCliente, dataAgendada, horarioAgendado, servico };
   agendamentos.push(agendamento);
-  salvarCSV();
   return agendamento;
 }
 
 function desmarcarAgendamento({ nomeCliente, telefoneCliente, dataAgendada, horarioAgendado }) {
   const idx = agendamentos.findIndex(a => a.nomeCliente === nomeCliente && a.telefoneCliente === telefoneCliente && a.dataAgendada === dataAgendada && a.horarioAgendado === horarioAgendado);
   if (idx === -1) throw new Error('Agendamento não encontrado.');
-  agendamentos.splice(idx, 1);
-  salvarCSV();
+  agendamentos.splice(idx, 1);  
   return true;
-}
-
-function salvarCSV() {
-  const dias = getProximosDiasUteis();
-  dias.forEach(data => {
-    const linhas = HORARIOS.map(horario => {
-      const ag = agendamentos.find(a => a.dataAgendada === data && a.horarioAgendado === horario);
-      if (ag) {
-        return `"${horario}";"${ag.nomeCliente}";"${ag.telefoneCliente}";"${ag.servico}"`;
-      } else {
-        return `"${horario}";"";"";""`;
-      }
-    });
-    fs.writeFileSync(path.join(__dirname, `../csv/agendamentos_${data.replace(/\//g,'-')}.csv`), linhas.join('\n'), 'utf8');
-  });
 }
 
 module.exports = {
