@@ -9,7 +9,7 @@ use(chaiExclude)
 
 describe('Agendamento External', () => {
     beforeEach(async () => {
-        const respostaLogin = await request('http://localhost:3000')
+        const respostaLogin = await request(process.env.BASE_URL_REST)
             .post('/usuario/logarUsuario')
             .send({
                 usuario: 'jessy',
@@ -24,7 +24,7 @@ describe('Agendamento External', () => {
             const dias = getProximosDiasUteis();
             const dataSelecionada = dias[4];
 
-            const resposta = await request('http://localhost:3000')
+            const resposta = await request(process.env.BASE_URL_REST)
                 .post('/agendamento/marcar')
                 .send({
                     nomeCliente: 'Daniela',
@@ -51,7 +51,7 @@ describe('Agendamento External', () => {
         };
 
         afterEach(async () => {
-            const respostaDesmarcar = await request('http://localhost:3000')
+            const respostaDesmarcar = await request(process.env.BASE_URL_REST)
                 .put('/agendamento/desmarcar')
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -66,7 +66,7 @@ describe('Agendamento External', () => {
         });
 
         it('Quando marco um agendamento com sucesso recebo 200', async () => {
-            const resposta = await request('http://localhost:3000')
+            const resposta = await request(process.env.BASE_URL_REST)
                 .post('/agendamento/marcar')
                 .set('Authorization', `Bearer ${token}`)
                 .send(payloadMarcacao);
@@ -90,7 +90,7 @@ describe('Agendamento External', () => {
         let resposta;
 
         afterEach(async () => {
-            await request('http://localhost:3000')
+            await request(process.env.BASE_URL_REST)
                 .put('/agendamento/desmarcar')
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -103,7 +103,7 @@ describe('Agendamento External', () => {
 
         it('Quando marco um agendamento para um cliente que já possui agendamento recebo erro 400', async () => {
             for (const idx of tentativas) {
-                resposta = await request('http://localhost:3000')
+                resposta = await request(process.env.BASE_URL_REST)
                     .post('/agendamento/marcar')
                     .set('Authorization', `Bearer ${token}`)
                     .send({
@@ -125,7 +125,7 @@ describe('Agendamento External', () => {
         const dataSelecionada = dias[1];
 
         beforeEach(async () => {
-            respostaMarcar = await request('http://localhost:3000')
+            respostaMarcar = await request(process.env.BASE_URL_REST)
                 .post('/agendamento/marcar')
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -139,7 +139,7 @@ describe('Agendamento External', () => {
 
         it('Quando desmarco um agendamento recebo sucesso 200', async () => {
 
-            respostaDesmarcar = await request('http://localhost:3000')
+            respostaDesmarcar = await request(process.env.BASE_URL_REST)
                 .put('/agendamento/desmarcar')
                 .set('Authorization', `Bearer ${token}`)
                 .send({
@@ -167,7 +167,7 @@ describe('Agendamento External', () => {
 
         beforeEach(async () => {
             for (let idx = 0; idx < clientes.length; idx++) {
-                await request('http://localhost:3000')
+                await request(process.env.BASE_URL_REST)
                     .post('/agendamento/marcar')
                     .set('Authorization', `Bearer ${token}`)
                     .send({
@@ -182,7 +182,7 @@ describe('Agendamento External', () => {
 
         afterEach(async () => {
             for (let idx = 0; idx < clientes.length; idx++) {
-                await request('http://localhost:3000')
+                await request(process.env.BASE_URL_REST)
                     .put('/agendamento/desmarcar')
                     .set('Authorization', `Bearer ${token}`)
                     .send({
@@ -195,7 +195,7 @@ describe('Agendamento External', () => {
         });
 
         it('Quando consulto três agendamentos para a data agendada recebo sucesso 200', async () => {
-            const consultaHorariosAgendados = await request('http://localhost:3000')
+            const consultaHorariosAgendados = await request(process.env.BASE_URL_REST)
                 .get(`/agendamento/horariosAgendados/${encodeURIComponent(dataSelecionada)}`)
                 .set('Accept', 'application/json')
 
