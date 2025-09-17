@@ -27,11 +27,35 @@ Esta API permite registrar, logar e consultar usuários, além de agendar horár
 - `POST /usuario/registrarUsuario` - Registra novo usuário
 - `POST /usuario/logarUsuario` - Realiza login
 - `GET /usuario/consultarUsuarios` - Lista usuários cadastrados
-- `POST /agendamento/marcar` - Marcar agendamento (login obrigatório)
-- `PUT /agendamento/desmarcar` - Desmarcar agendamento (login obrigatório)
+- `POST /agendamento/marcar` - Realiza a marcação do agendamento (login obrigatório)
+- `PUT /agendamento/desmarcar` - Efetua a desmarcação do agendamento (login obrigatório)
 - `GET /agendamento/horariosDisponiveis` - Listar próximos 5 dias úteis e horários disponíveis
-- `GET /agendamento/horariosAgendados/:date` - Listar agendamentos por data
+- `GET /agendamento/horariosAgendados/:date` - Listar agendamentos por data no formado "DD/MM/YYYY"
 - `GET /api-docs` - Documentação Swagger
+
+
+
+### GraphQL Types, Queries e Mutations
+
+Rode `npm run start-graphql` para executar a API do GraphQL e acesse a URL http://localhost:4000/graphql para acessá-la.
+
+- **Types:**
+  - `Usuarios`: usuario, senha
+  - `Agendamentos`: nomeCliente, telefoneCliente, dataAgendada, horarioAgendado, servico
+  - `Enum de serviço`: CORTE, COLORACAO e ESCOVA
+  
+- **Queries:**
+  - `consultaUsuarios`: consulta todos os usuários
+  - `horariosDisponiveis`: Listar próximos 5 dias úteis e horários disponíveis
+  - `horariosAgendados(date: String!)`: Listar agendamentos por data no formado "DD/MM/YYYY"
+
+- **Mutations:**
+  - `registrarUsuario(usuario, senha)`: Registra novo usuário
+  - `logarUsuario(usuario, senha)`: Realiza login
+  - `marcarAgendamento(nomeCliente, telefoneCliente, dataAgendada, horarioAgendado, servico)`: Realiza a marcação do agendamento (login obrigatório)
+  - `desmarcarAgendamento`: Efetua a desmarcação do agendamento (login obrigatório)
+
+
 
 ## Regras de Negócio
 - Não é permitido registrar usuários duplicados
@@ -44,35 +68,3 @@ Esta API permite registrar, logar e consultar usuários, além de agendar horár
 - Os dados são armazenados apenas em memória (variáveis)
 - Estrutura separada em controller, service e model
 - Documentação automática via Swagger
-
-## Exemplo de agendamento
-```json
-{
-  "nomeCliente": "Jessica",
-  "telefoneCliente": "51982844440",
-  "dataAgendada": "17/09/2025",
-  "horarioAgendado": "09:00",
-  "servico": "CORTE"
-}
-```
-
-## Exemplo de resposta ao marcar agendamento
-```json
-{
-  "message": "Agendamento realizado com sucesso!",
-  "agendamento": {
-    "nomeCliente": "Jessica",
-    "telefoneCliente": "51982844440",
-    "dataAgendada": "17/09/2025",
-    "horarioAgendado": "09:00",
-    "servico": "CORTE"
-  }
-}
-```
-
-## Exemplo de resposta ao desmarcar agendamento
-```json
-{
-  "message": "Horário agendado foi desmarcado."
-}
-```
