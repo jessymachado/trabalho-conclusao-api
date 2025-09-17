@@ -21,7 +21,7 @@ module.exports = gql`
     telefoneCliente: String!
     dataAgendada: String!
     horarioAgendado: String!
-    servico: Servico!
+  servico: String!
   }
 
   type HorariosDisponiveis {

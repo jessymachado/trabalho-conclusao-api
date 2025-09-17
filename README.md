@@ -53,7 +53,7 @@ Rode `npm run start-graphql` para executar a API do GraphQL e acesse a URL http:
   - `registrarUsuario(usuario, senha)`: Registra novo usuário
   - `logarUsuario(usuario, senha)`: Realiza login
   - `marcarAgendamento(nomeCliente, telefoneCliente, dataAgendada, horarioAgendado, servico)`: Realiza a marcação do agendamento (login obrigatório)
-  - `desmarcarAgendamento`: Efetua a desmarcação do agendamento (login obrigatório)
+  - `desmarcarAgendamento(nomeCliente, telefoneCliente, dataAgendada, horarioAgendado)`: Efetua a desmarcação do agendamento (login obrigatório)
 
 
 

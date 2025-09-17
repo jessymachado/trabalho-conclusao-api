@@ -3,6 +3,12 @@ const agendamentoService = require('../service/agendamentoService');
 const { AuthenticationError } = require('apollo-server-express');
 
 const resolvers = {
+  Servico: {
+    CORTE: 'CORTE',
+    COLORACAO: 'COLORAÇÃO',
+    ESCOVA: 'ESCOVA',
+  },
+
   Query: {
     consultarUsuarios: () => userService.consultarUsuarios(),
 
