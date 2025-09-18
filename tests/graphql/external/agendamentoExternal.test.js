@@ -10,7 +10,7 @@ describe('Agendamento External GraphQL', () => {
 
     before(async () => {
         const efetuarLogin = require('../fixture/requisicoes/login/logarUsuario.json')
-        const resposta = await request('http://localhost:4000')
+        const resposta = await request(process.env.BASE_URL_GRAPHQL)
             .post('/graphql')
             .send(efetuarLogin);
 
@@ -38,7 +38,7 @@ describe('Agendamento External GraphQL', () => {
                 variables: payload
             };
 
-            const resposta = await request('http://localhost:4000')
+            const resposta = await request(process.env.BASE_URL_GRAPHQL)
                 .post('/graphql')
                 .set('Authorization', `Bearer ${token}`)
                 .send(marcarMutation);
@@ -62,7 +62,7 @@ describe('Agendamento External GraphQL', () => {
                 }
             };
 
-            await request('http://localhost:4000')
+            await request(process.env.BASE_URL_GRAPHQL)
                 .post('/graphql')
                 .set('Authorization', `Bearer ${token}`)
                 .send(desmarcarMutation);
@@ -96,7 +96,7 @@ describe('Agendamento External GraphQL', () => {
                         servico: servicos[idx]
                     }
                 };
-                await request('http://localhost:4000')
+                await request(process.env.BASE_URL_GRAPHQL)
                     .post('/graphql')
                     .set('Authorization', `Bearer ${token}`)
                     .send(marcarMutation);
@@ -110,7 +110,7 @@ describe('Agendamento External GraphQL', () => {
                 }`,
                 variables: { data: dataSelecionada }
             };
-            const resposta = await request('http://localhost:4000')
+            const resposta = await request(process.env.BASE_URL_GRAPHQL)
                 .post('/graphql')
                 .send(horariosAgendadosQuery);
 
@@ -144,7 +144,7 @@ describe('Agendamento External GraphQL', () => {
                         horarioAgendado: horariosAgendados[idx]
                     }
                 };
-                await request('http://localhost:4000')
+                await request(process.env.BASE_URL_GRAPHQL)
                     .post('/graphql').set('Authorization', `Bearer ${token}`)
                     .send(desmarcarMutation);
             }
@@ -176,7 +176,7 @@ describe('Agendamento External GraphQL', () => {
                         servico: servicos[idx]
                     }
                 };
-                await request('http://localhost:4000')
+                await request(process.env.BASE_URL_GRAPHQL)
                     .post('/graphql')
                     .set('Authorization', `Bearer ${token}`)
                     .send(marcarMutation);
@@ -196,7 +196,7 @@ describe('Agendamento External GraphQL', () => {
                 query: `query HorariosDisponiveis { horariosDisponiveis { datas, horarios } }`
             };
 
-            const resposta = await request('http://localhost:4000')
+            const resposta = await request(process.env.BASE_URL_GRAPHQL)
                 .post('/graphql')
                 .send(horariosDisponiveisQuery);
 
@@ -229,7 +229,7 @@ describe('Agendamento External GraphQL', () => {
                         horarioAgendado: horariosAgendados[idx]
                     }
                 };
-                await request('http://localhost:4000')
+                await request(process.env.BASE_URL_GRAPHQL)
                     .post('/graphql').set('Authorization', `Bearer ${token}`)
                     .send(desmarcarMutation);
             }
