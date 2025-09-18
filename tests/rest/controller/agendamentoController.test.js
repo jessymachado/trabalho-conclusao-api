@@ -10,7 +10,7 @@ const app = require('../../../app');
 const agendamentoService = require('../../../service/agendamentoService');
 
 // Testes
-describe('Agendamento Controller', () => {
+describe('Agendamento Controller api REST', () => {
     describe('PUT /agendamento/desmarcar', () => {
 
         beforeEach(async () => {

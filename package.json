@@ -7,10 +7,13 @@
         "start-rest": "node server.js",
         "start-graphql": "node graphql/server.js",
         "test": "mocha tests/**/*.test.js --timeout 10000 --reporter mochawesome",
+        "test-graphql-external": "mocha tests/graphql/external/**/*.test.js --timeout 10000 --reporter mochawesome",
         "test-rest-external": "mocha tests/rest/external/**/*.test.js --timeout 10000 --reporter mochawesome",
         "test-rest-controller": "mocha tests/rest/controller/**/*.test.js --timeout 10000 --reporter mochawesome"
     },
     "dependencies": {
+        "express": "^4.17.1",
+        "graphql": "^16.8.1",
         "apollo-server-express": "^3.13.0",
         "jsonwebtoken": "^9.0.2",
         "swagger-jsdoc": "^6.2.8",

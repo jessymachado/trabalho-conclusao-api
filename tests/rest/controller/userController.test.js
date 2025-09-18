@@ -10,7 +10,7 @@ const app = require('../../../app');
 const userService = require('../../../service/userService');
 
 
-describe('User Controller', () => {
+describe('User Controller api REST', () => {
     describe('POST /usuarios/registrarUsuario', () => {
 
         beforeEach(async () => {

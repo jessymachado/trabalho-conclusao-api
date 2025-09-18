@@ -1,4 +1,3 @@
-// Bibliotecas
 const request = require('supertest');
 const { expect, use } = require('chai');
 const { getProximosDiasUteis } = require('../../../service/agendamentoService.js');
@@ -7,7 +6,7 @@ require('dotenv').config();
 const chaiExclude = require('chai-exclude')
 use(chaiExclude)
 
-describe('Agendamento External', () => {
+describe('Agendamento External api REST', () => {
     beforeEach(async () => {
         const respostaLogin = await request(process.env.BASE_URL_REST)
             .post('/usuario/logarUsuario')
@@ -50,21 +49,6 @@ describe('Agendamento External', () => {
             servico: "COLORAÇÃO"
         };
 
-        afterEach(async () => {
-            const respostaDesmarcar = await request(process.env.BASE_URL_REST)
-                .put('/agendamento/desmarcar')
-                .set('Authorization', `Bearer ${token}`)
-                .send({
-                    nomeCliente: payloadMarcacao.nomeCliente,
-                    telefoneCliente: payloadMarcacao.telefoneCliente,
-                    dataAgendada: payloadMarcacao.dataAgendada,
-                    horarioAgendado: payloadMarcacao.horarioAgendado
-                });
-
-            expect(respostaDesmarcar.body.message).to.equal('Horário agendado foi desmarcado.');
-            expect(respostaDesmarcar.status).to.equal(200);
-        });
-
         it('Quando marco um agendamento com sucesso recebo 200', async () => {
             const resposta = await request(process.env.BASE_URL_REST)
                 .post('/agendamento/marcar')
@@ -81,6 +65,21 @@ describe('Agendamento External', () => {
                 .to.deep.equal(respostaEsperada.agendamento);
 
         });
+
+        afterEach(async () => {
+            const respostaDesmarcar = await request(process.env.BASE_URL_REST)
+                .put('/agendamento/desmarcar')
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    nomeCliente: payloadMarcacao.nomeCliente,
+                    telefoneCliente: payloadMarcacao.telefoneCliente,
+                    dataAgendada: payloadMarcacao.dataAgendada,
+                    horarioAgendado: payloadMarcacao.horarioAgendado
+                });
+
+            expect(respostaDesmarcar.body.message).to.equal('Horário agendado foi desmarcado.');
+            expect(respostaDesmarcar.status).to.equal(200);
+        });
     });
 
     describe('POST /agendamento/marcar : Valida que agendamento duplicado é rejeitado', () => {
@@ -88,18 +87,6 @@ describe('Agendamento External', () => {
         const dataSelecionada = dias[2];
         const tentativas = [0, 1];
         let resposta;
-
-        afterEach(async () => {
-            await request(process.env.BASE_URL_REST)
-                .put('/agendamento/desmarcar')
-                .set('Authorization', `Bearer ${token}`)
-                .send({
-                    nomeCliente: 'Chaiane',
-                    telefoneCliente: '51982897665',
-                    dataAgendada: dataSelecionada,
-                    horarioAgendado: '10:30'
-                });
-        });
 
         it('Quando marco um agendamento para um cliente que já possui agendamento recebo erro 400', async () => {
             for (const idx of tentativas) {
@@ -117,6 +104,18 @@ describe('Agendamento External', () => {
             expect(resposta.status).to.equal(400);
             expect(resposta.body.error || resposta.body.message).to.equal('Cliente já possui agendamento para este serviço neste dia e horário.');
 
+        });
+
+        afterEach(async () => {
+            await request(process.env.BASE_URL_REST)
+                .put('/agendamento/desmarcar')
+                .set('Authorization', `Bearer ${token}`)
+                .send({
+                    nomeCliente: 'Chaiane',
+                    telefoneCliente: '51982897665',
+                    dataAgendada: dataSelecionada,
+                    horarioAgendado: '10:30'
+                });
         });
     });
 
@@ -180,20 +179,6 @@ describe('Agendamento External', () => {
             }
         });
 
-        afterEach(async () => {
-            for (let idx = 0; idx < clientes.length; idx++) {
-                await request(process.env.BASE_URL_REST)
-                    .put('/agendamento/desmarcar')
-                    .set('Authorization', `Bearer ${token}`)
-                    .send({
-                        nomeCliente: clientes[idx],
-                        telefoneCliente: contatos[idx],
-                        dataAgendada: dataSelecionada,
-                        horarioAgendado: horarioAgendado[idx]
-                    });
-            }
-        });
-
         it('Quando consulto três agendamentos para a data agendada recebo sucesso 200', async () => {
             const consultaHorariosAgendados = await request(process.env.BASE_URL_REST)
                 .get(`/agendamento/horariosAgendados/${encodeURIComponent(dataSelecionada)}`)
@@ -208,6 +193,20 @@ describe('Agendamento External', () => {
             }
             expect(consultaHorariosAgendados.status).to.equal(200);
             expect(consultaHorariosAgendados.body.horariosAgendados).to.have.lengthOf(3);
+        });
+
+        afterEach(async () => {
+            for (let idx = 0; idx < clientes.length; idx++) {
+                await request(process.env.BASE_URL_REST)
+                    .put('/agendamento/desmarcar')
+                    .set('Authorization', `Bearer ${token}`)
+                    .send({
+                        nomeCliente: clientes[idx],
+                        telefoneCliente: contatos[idx],
+                        dataAgendada: dataSelecionada,
+                        horarioAgendado: horarioAgendado[idx]
+                    });
+            }
         });
 
     });
