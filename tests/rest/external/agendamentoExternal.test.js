@@ -6,7 +6,7 @@ require('dotenv').config();
 const chaiExclude = require('chai-exclude')
 use(chaiExclude)
 
-describe('Agendamento External', () => {
+describe('Agendamento External api REST', () => {
     beforeEach(async () => {
         const respostaLogin = await request(process.env.BASE_URL_REST)
             .post('/usuario/logarUsuario')
