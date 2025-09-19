@@ -10,7 +10,7 @@ Esta API permite registrar, logar e consultar usuários, além de agendar horár
    npm install express swagger-ui-express swagger-jsdoc
    ```
 
-## Executando a API
+## Executando a API REST
 
 - Para iniciar o servidor:
   ```cmd
@@ -21,8 +21,7 @@ Esta API permite registrar, logar e consultar usuários, além de agendar horár
   const app = require('./app');
   ```
 
-
-## Endpoints
+- **Endpoints:**
 
 - `POST /usuario/registrarUsuario` - Registra novo usuário
 - `POST /usuario/logarUsuario` - Realiza login
@@ -35,8 +34,7 @@ Esta API permite registrar, logar e consultar usuários, além de agendar horár
 
 
 
-### GraphQL Types, Queries e Mutations
-
+## Executando a API GraphQL
 Rode `npm run start-graphql` para executar a API do GraphQL e acesse a URL http://localhost:4000/graphql para acessá-la.
 
 - **Types:**

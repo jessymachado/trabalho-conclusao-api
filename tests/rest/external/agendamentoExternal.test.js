@@ -54,6 +54,7 @@ describe('Agendamento External api REST', () => {
                 .post('/agendamento/marcar')
                 .set('Authorization', `Bearer ${token}`)
                 .send(payloadMarcacao);
+
             expect(resposta.status).to.equal(201);
 
             const mensagem = resposta.body.message;
@@ -88,34 +89,38 @@ describe('Agendamento External api REST', () => {
         const tentativas = [0, 1];
         let resposta;
 
+        const payloadMarcacao = {
+            nomeCliente: 'Patrícia',
+            telefoneCliente: '51982899999',
+            dataAgendada: dataSelecionada,
+            horarioAgendado: '11:30',
+            servico: "COLORAÇÃO"
+        };
+
         it('Quando marco um agendamento para um cliente que já possui agendamento recebo erro 400', async () => {
             for (const idx of tentativas) {
                 resposta = await request(process.env.BASE_URL_REST)
                     .post('/agendamento/marcar')
                     .set('Authorization', `Bearer ${token}`)
-                    .send({
-                        nomeCliente: 'Chaiane',
-                        telefoneCliente: '51982897665',
-                        dataAgendada: dataSelecionada,
-                        horarioAgendado: '10:30',
-                        servico: "CORTE"
-                    });
+                    .send(payloadMarcacao);
             }
             expect(resposta.status).to.equal(400);
             expect(resposta.body.error || resposta.body.message).to.equal('Cliente já possui agendamento para este serviço neste dia e horário.');
-
         });
 
         afterEach(async () => {
-            await request(process.env.BASE_URL_REST)
+            const respostaDesmarcar = await request(process.env.BASE_URL_REST)
                 .put('/agendamento/desmarcar')
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    nomeCliente: 'Chaiane',
-                    telefoneCliente: '51982897665',
-                    dataAgendada: dataSelecionada,
-                    horarioAgendado: '10:30'
+                    nomeCliente: payloadMarcacao.nomeCliente,
+                    telefoneCliente: payloadMarcacao.telefoneCliente,
+                    dataAgendada: payloadMarcacao.dataAgendada,
+                    horarioAgendado: payloadMarcacao.horarioAgendado
                 });
+
+            expect(respostaDesmarcar.body.message).to.equal('Horário agendado foi desmarcado.');
+            expect(respostaDesmarcar.status).to.equal(200);
         });
     });
 
@@ -123,36 +128,37 @@ describe('Agendamento External api REST', () => {
         const dias = getProximosDiasUteis();
         const dataSelecionada = dias[1];
 
+        const payloadMarcacao = {
+            nomeCliente: 'Jonas',
+            telefoneCliente: '51982812365',
+            dataAgendada: dataSelecionada,
+            horarioAgendado: '09:30',
+            servico: "COLORAÇÃO"
+        };
+
         beforeEach(async () => {
             respostaMarcar = await request(process.env.BASE_URL_REST)
                 .post('/agendamento/marcar')
                 .set('Authorization', `Bearer ${token}`)
-                .send({
-                    nomeCliente: 'Jonas',
-                    telefoneCliente: '51982812365',
-                    dataAgendada: dataSelecionada,
-                    horarioAgendado: '09:30',
-                    servico: "COLORAÇÃO"
-                });
+                .send(payloadMarcacao);
         });
 
         it('Quando desmarco um agendamento recebo sucesso 200', async () => {
 
-            respostaDesmarcar = await request(process.env.BASE_URL_REST)
+            const respostaDesmarcar = await request(process.env.BASE_URL_REST)
                 .put('/agendamento/desmarcar')
                 .set('Authorization', `Bearer ${token}`)
                 .send({
-                    nomeCliente: 'Jonas',
-                    telefoneCliente: '51982812365',
-                    dataAgendada: dataSelecionada,
-                    horarioAgendado: '09:30'
+                    nomeCliente: payloadMarcacao.nomeCliente,
+                    telefoneCliente: payloadMarcacao.telefoneCliente,
+                    dataAgendada: payloadMarcacao.dataAgendada,
+                    horarioAgendado: payloadMarcacao.horarioAgendado
                 });
-            const mensagemDesmarcacao = respostaDesmarcar.body.message;
-            expect(mensagemDesmarcacao).to.equal('Horário agendado foi desmarcado.');
+
+            expect(respostaDesmarcar.body.message).to.equal('Horário agendado foi desmarcado.');
             expect(respostaDesmarcar.status).to.equal(200);
         });
     });
-
 
     describe('GET /agendamento/horariosAgendados/{date} : Valida que três agendamentos estão presentes na consulta', () => {
 
