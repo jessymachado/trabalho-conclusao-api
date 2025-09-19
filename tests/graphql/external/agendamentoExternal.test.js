@@ -11,13 +11,14 @@ describe('Agendamento External GraphQL', () => {
     let token;
 
     before(async () => {
-        const efetuarLogin = require('../fixture/requisicoes/login/logarUsuario.json')
+        const efetuarLogin = require('../fixture/requisicoes/login/logarUsuarioComSucesso.json')
         const resposta = await request(process.env.BASE_URL_GRAPHQL)
             .post('/graphql')
             .send(efetuarLogin);
 
         token = resposta.body.data.logarUsuario.token;
     });
+
     describe('Mutation: marcarAgendamento', () => {
         const dias = getProximosDiasUteis();
         const dataSelecionada = dias[2];
@@ -70,6 +71,7 @@ describe('Agendamento External GraphQL', () => {
                 .send(desmarcarMutation);
         });
     });
+
 
     describe('Query: horariosAgendados', () => {
 
@@ -152,7 +154,6 @@ describe('Agendamento External GraphQL', () => {
             }
         });
     });
-
     describe('Query: horariosDisponiveis', () => {
         const dias = getProximosDiasUteis();
         const dataSelecionada = dias[0];
@@ -167,9 +168,9 @@ describe('Agendamento External GraphQL', () => {
                 const marcarMutation = {
                     query: `mutation MarcarAgendamento($nomeCliente: String!, $telefoneCliente: String!, $dataAgendada: String!, $horarioAgendado: String!, $servico: Servico!) {
                         marcarAgendamento(nomeCliente: $nomeCliente, telefoneCliente: $telefoneCliente, dataAgendada: $dataAgendada, horarioAgendado: $horarioAgendado, servico: $servico) {
-                            nomeCliente telefoneCliente dataAgendada horarioAgendado servico
-                        }
-                    }`,
+                        nomeCliente telefoneCliente dataAgendada horarioAgendado servico
+                    }
+                }`,
                     variables: {
                         nomeCliente: clientes[idx],
                         telefoneCliente: contatos[idx],
@@ -216,14 +217,12 @@ describe('Agendamento External GraphQL', () => {
                 .to.deep.equal(horariosRetornadosSemOsDoisAgendamentos);
         });
 
-
-
         afterEach(async () => {
             for (let idx = 0; idx < horariosAgendados.length; idx++) {
                 const desmarcarMutation = {
                     query: `mutation DesmarcarAgendamento($nomeCliente: String!, $telefoneCliente: String!, $dataAgendada: String!, $horarioAgendado: String!) {
-                                desmarcarAgendamento(nomeCliente: $nomeCliente, telefoneCliente: $telefoneCliente, dataAgendada: $dataAgendada, horarioAgendado: $horarioAgendado)
-                            }`,
+                            desmarcarAgendamento(nomeCliente: $nomeCliente, telefoneCliente: $telefoneCliente, dataAgendada: $dataAgendada, horarioAgendado: $horarioAgendado)
+                        }`,
                     variables: {
                         nomeCliente: clientes[idx],
                         telefoneCliente: contatos[idx],
