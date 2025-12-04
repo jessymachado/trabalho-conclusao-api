@@ -90,11 +90,31 @@ export default function () {
               
                 dados.horariosAgendados[0].dataAgendada === payloadMarcacao.dataAgendada
         });
-
-        console.log(responseConsultaHorarios.json())
     });
 
+    group('Desmarcar os horários agendados', function () {
 
+        let responseDesmarcarAgendamento = http.put('http://localhost:3000/agendamento/desmarcar',
+            JSON.stringify({
+                nomeCliente: payloadMarcacao.nomeCliente,
+                telefoneCliente: payloadMarcacao.telefoneCliente,
+                dataAgendada: payloadMarcacao.dataAgendada,
+                horarioAgendado: payloadMarcacao.horarioAgendado,
+            }),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+        console.log(responseDesmarcarAgendamento.json())
+
+        check(responseDesmarcarAgendamento, {
+            'status da desmarcação deve ser 200': (resp) => resp.status === 200,
+            'mensagem deve ser de sucesso': (resp) =>
+                resp.json('message') === 'Horário agendado foi desmarcado.',
+        });
+    });
 
 
     group('Simulando o pensamento do usuário', function () {
