@@ -23,12 +23,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Instalar K6
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnupg software-properties-common
+          sudo wget -q -O - https://dl.k6.io/key.gpg | sudo apt-key add -
+          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install -y k6
+
       - name: Rodar testes K6
         run: |
-          # Cria pasta para resultados
           mkdir -p k6-reports
-          
-          # Executa K6 e salva relatório JSON
           k6 run --out json=k6-reports/result.json tests/k6/agendamentoLoad.k6.test.js
 
       - name: Salvar relatório do K6 como artefato
