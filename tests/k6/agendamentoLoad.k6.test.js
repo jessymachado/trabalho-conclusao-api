@@ -68,7 +68,33 @@ export default function () {
                 resp.json('message') === 'Agendamento realizado com sucesso!',
         });
 
+        console.log(responseMarcarAgendamento.json())
     });
+
+    
+    group('Consultar horários agendados', function () {
+
+        let responseConsultaHorarios = http.get(
+            `http://localhost:3000/agendamento/horariosAgendados/${encodeURIComponent(payloadMarcacao.dataAgendada)}`
+        );
+
+        const dados = JSON.parse(responseConsultaHorarios.body);
+
+        check(responseConsultaHorarios, {
+            'status deve ser 200': (resp) => resp.status === 200,
+
+            'deve existir exatamente 1 item em horariosAgendados': () =>
+                dados.horariosAgendados.length === 1,
+
+            'a data retornada deve ser igual à data selecionada': () =>
+              
+                dados.horariosAgendados[0].dataAgendada === payloadMarcacao.dataAgendada
+        });
+
+        console.log(responseConsultaHorarios.json())
+    });
+
+
 
 
     group('Simulando o pensamento do usuário', function () {
