@@ -4,75 +4,58 @@ on:
   workflow_dispatch:
     inputs:
       tipo_teste:
-        type: choice
         description: Qual teste deseja executar?
+        required: true
+        default: todos
+        type: choice
         options:
           - todos
-          - rest
+          - rest-controller
+          - rest-external
           - graphql
-          - k6
-        default: todos
-
-      vus:
-        description: Número de VUs para o K6 (opcional)
-        required: false
-        default: "3"
-
-      iterations:
-        description: Número de Iterations para o K6 (opcional)
-        required: false
-        default: "3"
 
 jobs:
-  rest-tests:
+  run-tests:
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.tipo_teste == 'rest' || github.event.inputs.tipo_teste == 'todos' }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-      - run: npm install
-      - run: npm run test-rest-controller
-      - run: npm run start-rest &
-      - run: sleep 5
-      - run: npm run test-rest-external
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  graphql-tests:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.tipo_teste == 'graphql' || github.event.inputs.tipo_teste == 'todos' }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-      - run: npm install
-      - run: npm run start-graphql &
-      - run: sleep 5
-      - run: npm run test-graphql-external
-
-  k6-tests:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.tipo_teste == 'k6' || github.event.inputs.tipo_teste == 'todos' }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Instalar k6
-        run: sudo apt install k6 -y
-
-      - name: Rodar testes de performance K6
+      - name: Criar .env
         run: |
-          echo "Executando k6 com VUs=${{ github.event.inputs.vus }} e Iterations=${{ github.event.inputs.iterations }}"
-          k6 run tests/k6/agendamentoLoad.k6.test.js \
-            -e BASE_URL_REST=${{ secrets.BASE_URL_REST }} \
-            --vus ${{ github.event.inputs.vus }} \
-            --iterations ${{ github.event.inputs.iterations }} \
-            --out html=html-report.html
+          echo "BASE_URL_REST=${{ secrets.BASE_URL_REST }}" >> .env
+          echo "BASE_URL_GRAPHQL=${{ secrets.BASE_URL_GRAPHQL }}" >> .env
 
-      - name: Publicar relatório K6
-        uses: actions/upload-artifact@v3
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
         with:
-          name: k6-html-report
-          path: html-report.html
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Rodar testes selecionados
+        run: |
+          set -e
+          TIPO="${{ github.event.inputs.tipo_teste }}"
+          
+          if [ "$TIPO" = "rest-controller" ] || [ "$TIPO" = "todos" ]; then
+            echo "Rodando testes REST controller..."
+            npm run test-rest-controller
+          fi
+
+          if [ "$TIPO" = "rest-external" ] || [ "$TIPO" = "todos" ]; then
+            echo "Subindo API REST..."
+            npm run start-rest &
+            sleep 5
+            echo "Rodando testes REST external..."
+            npm run test-rest-external
+          fi
+
+          if [ "$TIPO" = "graphql" ] || [ "$TIPO" = "todos" ]; then
+            echo "Subindo API GraphQL..."
+            npm run start-graphql &
+            sleep 5
+            echo "Rodando testes GraphQL external..."
+            npm run test-graphql-external
+          fi
