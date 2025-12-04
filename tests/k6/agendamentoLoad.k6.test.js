@@ -33,8 +33,8 @@ export default function () {
     };
 
 
-    group('Fazendo login com sucesso', function () {
-        let responseLoginUsuario = http.post('http://localhost:3000/usuario/logarUsuario',
+    group('Fazendo login com sucesso', function () {        
+            let responseLoginUsuario = http.post(`${__ENV.BASE_URL_REST}/usuario/logarUsuario`,
             JSON.stringify({
                 usuario: 'recep_salao_k6',
                 senha: '123456'
@@ -59,7 +59,7 @@ export default function () {
 
         payloadMarcacao.dataAgendada = dataSelecionada
 
-        let responseMarcarAgendamento = http.post('http://localhost:3000/agendamento/marcar',
+        let responseMarcarAgendamento = http.post(`${__ENV.BASE_URL_REST}/agendamento/marcar`,            
             JSON.stringify({
                 nomeCliente: payloadMarcacao.nomeCliente,
                 telefoneCliente: payloadMarcacao.telefoneCliente,
@@ -81,15 +81,13 @@ export default function () {
             'mensagem deve ser de sucesso': (resp) =>
                 resp.json('message') === 'Agendamento realizado com sucesso!',
         });
-
-
     });
 
 
     group('Consultar horários agendados', function () {
 
         let responseConsultaHorarios = http.get(
-            `http://localhost:3000/agendamento/horariosAgendados/${encodeURIComponent(payloadMarcacao.dataAgendada)}`
+            `${__ENV.BASE_URL_REST}/agendamento/horariosAgendados/${encodeURIComponent(payloadMarcacao.dataAgendada)}`
         );
 
         const dados = JSON.parse(responseConsultaHorarios.body);
@@ -108,7 +106,7 @@ export default function () {
 
     group('Desmarcar os horários agendados', function () {
 
-        let responseDesmarcarAgendamento = http.put('http://localhost:3000/agendamento/desmarcar',
+        let responseDesmarcarAgendamento = http.put(`${__ENV.BASE_URL_REST}/agendamento/desmarcar`,
             JSON.stringify({
                 nomeCliente: payloadMarcacao.nomeCliente,
                 telefoneCliente: payloadMarcacao.telefoneCliente,
@@ -129,7 +127,6 @@ export default function () {
                 resp.json('message') === 'Horário agendado foi desmarcado.',
         });
     });
-
 
     group('Simulando o pensamento do usuário', function () {
         sleep(1);
