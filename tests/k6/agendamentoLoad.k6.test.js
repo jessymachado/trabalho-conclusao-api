@@ -1,10 +1,12 @@
 import http from 'k6/http';
 import { check, sleep, group } from 'k6';
 import { getProximosDiasUteis } from './functions/datas.js';
+import { faker } from 'https://cdn.jsdelivr.net/npm/@faker-js/faker/+esm';
+
 
 export const options = {
-    vus: 1,
-    iterations: 1,
+    vus: 6,
+    iterations: 6,
     thresholds: {
         http_req_failed: ['rate<0.01'],
     },
@@ -14,13 +16,22 @@ export const options = {
 export default function () {
     let token = ''
 
+    const HORARIOS = [
+        '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+        '13:30', '14:00', '14:30', '15:00', '15:30', '16:00',
+        '16:30', '17:00', '17:30', '18:00'
+    ];
+
+    const SERVICOS = ['CORTE', 'COLORAÇÃO', 'ESCOVA'];
+
     const payloadMarcacao = {
-        nomeCliente: 'Patrícia',
-        telefoneCliente: '51982899999',
+        nomeCliente: faker.person.fullName(),
+        telefoneCliente: faker.phone.number('(##) #####-####'),
         dataAgendada: '',
-        horarioAgendado: '11:30',
-        servico: "COLORAÇÃO"
+        horarioAgendado: HORARIOS[__VU - 1],
+        servico: SERVICOS[__VU - 1]
     };
+
 
     group('Fazendo login com sucesso', function () {
         let responseLoginUsuario = http.post('http://localhost:3000/usuario/logarUsuario',
@@ -43,7 +54,8 @@ export default function () {
 
     group('Marcar agendamento com sucesso', function () {
         const dias = getProximosDiasUteis();
-        const dataSelecionada = dias[3];
+        const indiceAleatorio = Math.floor(Math.random() * dias.length);
+        const dataSelecionada = dias[indiceAleatorio];
 
         payloadMarcacao.dataAgendada = dataSelecionada
 
@@ -62,16 +74,18 @@ export default function () {
                 }
             });
 
+        console.log(responseMarcarAgendamento.json())
+
         check(responseMarcarAgendamento, {
             'status da marcação deve ser 201': (resp) => resp.status === 201,
             'mensagem deve ser de sucesso': (resp) =>
                 resp.json('message') === 'Agendamento realizado com sucesso!',
         });
 
-        console.log(responseMarcarAgendamento.json())
+
     });
 
-    
+
     group('Consultar horários agendados', function () {
 
         let responseConsultaHorarios = http.get(
@@ -79,16 +93,16 @@ export default function () {
         );
 
         const dados = JSON.parse(responseConsultaHorarios.body);
+        console.log(dados)
 
         check(responseConsultaHorarios, {
-            'status deve ser 200': (resp) => resp.status === 200,
-
-            'deve existir exatamente 1 item em horariosAgendados': () =>
-                dados.horariosAgendados.length === 1,
-
-            'a data retornada deve ser igual à data selecionada': () =>
-              
-                dados.horariosAgendados[0].dataAgendada === payloadMarcacao.dataAgendada
+            "o horário agendado deve estar presente": () =>
+                dados.horariosAgendados.some(
+                    (item) =>
+                        item.dataAgendada === payloadMarcacao.dataAgendada &&
+                        item.horarioAgendado === payloadMarcacao.horarioAgendado &&
+                        item.telefoneCliente === payloadMarcacao.telefoneCliente
+                )
         });
     });
 
