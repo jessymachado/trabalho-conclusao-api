@@ -3,6 +3,8 @@ import { check, sleep, group } from 'k6';
 import { getProximosDiasUteis } from './functions/datas.js';
 import { faker } from 'https://cdn.jsdelivr.net/npm/@faker-js/faker/+esm';
 
+// Captura a variável do workflow
+const BASE_URL = __ENV.BASE_URL_REST;
 
 export const options = {
     vus: 6,
@@ -34,7 +36,7 @@ export default function () {
 
 
     group('Fazendo login com sucesso', function () {        
-            let responseLoginUsuario = http.post(`${__ENV.BASE_URL_REST}/usuario/logarUsuario`,
+            let responseLoginUsuario = http.post(`${BASE_URL}/usuario/logarUsuario`,
             JSON.stringify({
                 usuario: 'recep_salao_k6',
                 senha: '123456'
@@ -59,7 +61,7 @@ export default function () {
 
         payloadMarcacao.dataAgendada = dataSelecionada
 
-        let responseMarcarAgendamento = http.post(`${__ENV.BASE_URL_REST}/agendamento/marcar`,            
+        let responseMarcarAgendamento = http.post(`${BASE_URL}/agendamento/marcar`,            
             JSON.stringify({
                 nomeCliente: payloadMarcacao.nomeCliente,
                 telefoneCliente: payloadMarcacao.telefoneCliente,
@@ -87,7 +89,7 @@ export default function () {
     group('Consultar horários agendados', function () {
 
         let responseConsultaHorarios = http.get(
-            `${__ENV.BASE_URL_REST}/agendamento/horariosAgendados/${encodeURIComponent(payloadMarcacao.dataAgendada)}`
+            `${BASE_URL}/agendamento/horariosAgendados/${encodeURIComponent(payloadMarcacao.dataAgendada)}`
         );
 
         const dados = JSON.parse(responseConsultaHorarios.body);
@@ -106,7 +108,7 @@ export default function () {
 
     group('Desmarcar os horários agendados', function () {
 
-        let responseDesmarcarAgendamento = http.put(`${__ENV.BASE_URL_REST}/agendamento/desmarcar`,
+        let responseDesmarcarAgendamento = http.put(`${BASE_URL}/agendamento/desmarcar`,
             JSON.stringify({
                 nomeCliente: payloadMarcacao.nomeCliente,
                 telefoneCliente: payloadMarcacao.telefoneCliente,
