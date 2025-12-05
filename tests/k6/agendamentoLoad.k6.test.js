@@ -3,13 +3,17 @@ import { check, sleep, group } from 'k6';
 import { getProximosDiasUteis } from './functions/datas.js';
 import { faker } from 'https://cdn.jsdelivr.net/npm/@faker-js/faker/+esm';
 import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
+import { mkdirSync } from 'fs';
+
+mkdirSync('k6-reports', { recursive: true });
 
 export function handleSummary(data) {
   return {
-    'report.html': htmlReport(data),
-    'report.json': JSON.stringify(data),
+    'k6-reports/report.html': htmlReport(data),
+    'k6-reports/result.json': JSON.stringify(data, null, 2),
   };
 }
+
 
 const BASE_URL = __ENV.BASE_URL_REST;
 
