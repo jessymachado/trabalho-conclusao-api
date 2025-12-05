@@ -29,31 +29,16 @@ jobs:
 
       - name: Subir API REST
         run: |
-          npm run start-rest &   # comando para iniciar sua API
-          sleep 5                # espera a API subir
+          npm run start-rest &
+          sleep 5
 
-      - name: Rodar testes K6
+      - name: Rodar testes K6 e gerar relatório HTML/JSON
         run: |
           mkdir -p k6-reports
-          k6 run \
-            --env BASE_URL_REST=http://127.0.0.1:3000 \
-            --out json=k6-reports/result.json \
-            tests/k6/agendamentoLoad.k6.test.js
+          k6 run --env BASE_URL_REST=http://127.0.0.1:3000 tests/k6/agendamentoLoad.k6.test.js
 
-      - name: Instalar k6-to-html
-        run: npm install -g k6-to-html
-
-      - name: Gerar relatório HTML do K6
-        run: k6-to-html k6-reports/result.json -o k6-reports/report.html
-
-      - name: Salvar relatório JSON do K6 como artefato
+      - name: Salvar relatórios do K6 como artefatos
         uses: actions/upload-artifact@v4
         with:
-          name: k6-json-report
-          path: k6-reports/result.json
-
-      - name: Salvar relatório HTML do K6 como artefato
-        uses: actions/upload-artifact@v4
-        with:
-          name: k6-html-report
-          path: k6-reports/report.html
+          name: k6-report
+          path: k6-reports/
