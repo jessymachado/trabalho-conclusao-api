@@ -40,9 +40,11 @@ jobs:
             --out json=k6-reports/result.json \
             tests/k6/agendamentoLoad.k6.test.js
 
+      - name: Instalar k6-to-html
+        run: npm install -g k6-to-html
+
       - name: Gerar relatório HTML do K6
-        run: |
-          npx @k6/html-reporter k6-reports/result.json --output k6-reports/report.html
+        run: k6-to-html k6-reports/result.json -o k6-reports/report.html
 
       - name: Salvar relatório JSON do K6 como artefato
         uses: actions/upload-artifact@v4
