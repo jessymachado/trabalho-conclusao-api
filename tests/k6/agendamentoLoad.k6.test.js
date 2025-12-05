@@ -3,9 +3,6 @@ import { check, sleep, group } from 'k6';
 import { getProximosDiasUteis } from './functions/datas.js';
 import { faker } from 'https://cdn.jsdelivr.net/npm/@faker-js/faker/+esm';
 import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
-import { mkdirSync } from 'fs';
-
-mkdirSync('k6-reports', { recursive: true });
 
 export function handleSummary(data) {
   return {
